@@ -1,0 +1,671 @@
+* {
+    margin: 0;
+    padding: 0;
+    /* box-sizing: border-box; */
+}
+
+body {
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    min-height: 100vh;
+}
+
+#game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 16px;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.12);
+}
+
+/* Header 背景色：根据玩家阵营显示不同颜色 */
+#header.red {
+    background: linear-gradient(90deg, #ff6b6b 0%, #cc0000 100%);
+}
+
+#header.blue {
+    background: linear-gradient(90deg, #6b8bff 0%, #0026cc 100%);
+}
+
+/* 中央大字消息样式 */
+.center-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 72px;
+    color: orange;
+    font-weight: 700;
+    z-index: 2000;
+    pointer-events: none;
+    text-align: center;
+    display: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 小动画：淡入淡出 */
+.center-message.show {
+    display: block;
+    animation: centerMessageFade 2s ease-in-out;
+}
+@keyframes centerMessageFade {
+    0% { opacity: 0; transform: translate(-50%, -48%) scale(0.98); }
+    10% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -52%) scale(0.98); }
+}
+
+#header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+#game-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 1.2em;
+}
+
+#game-board-container {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+#board {
+    width: 640px;
+    height: 640px;
+    border: 3px solid #333;
+    background: #87CEEB;
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    grid-template-rows: repeat(16, 1fr);
+}
+
+.cell {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.cell:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.cell.obstacle {
+    background: #8B4513;
+    border-color: #654321;
+}
+
+.cell.ship-cell {
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+
+.cell.red-ship {
+    background: #FF4444;
+    border-color: #CC0000;
+}
+
+.cell.blue-ship {
+    background: #4444FF;
+    border-color: #0000CC;
+}
+
+.cell.selected {
+    box-shadow: 0 0 10px gold;
+}
+
+#controls {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.ship-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ship-btn {
+    padding: 10px;
+    background: #4CAF50;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.ship-btn:hover {
+    background: #45a049;
+}
+
+.ship-btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+#action-buttons {
+    margin-top: 20px;
+}
+
+#action-buttons button {
+    padding: 10px 15px;
+    margin: 5px;
+background: #2196F3;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#action-buttons button:hover {
+    background: #1976D2;
+}
+
+#action-buttons button:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+#status-panel {
+    display: flex;
+    gap: 30px;
+}
+
+.player-status {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.player-status h3 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.ship-status {
+    margin: 5px 0;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+#dice-result {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+#dice-value {
+    font-size: 4em;
+    margin: 20px 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.win-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+/* 添加移动和攻击目标的样式 */
+.cell.move-target {
+    box-shadow: 0 0 10px 3px #27ae60;
+    background: rgba(39, 174, 96, 0.3);
+    border: 2px solid #27ae60;
+}
+
+.cell.attack-target {
+    box-shadow: 0 0 10px 3px #e74c3c;
+    background: rgba(231, 76, 60, 0.3);
+    border: 2px solid #e74c3c;
+}
+
+.cell.move-target:hover, .cell.attack-target:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+/* 动作提示样式 */
+#action-hint {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000;
+    font-size: 18px;
+    text-align: center;
+    display: none;
+}
+
+/* 动作按钮激活状态 */
+#action-buttons button.active {
+    background: #ff9800;
+    box-shadow: 0 0 10px #ff9800;
+}
+
+
+/* 船只俯视图样式 */
+.ship-top-view {
+    display: inline-block;
+    margin: 2px;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.ship-top-view.horizontal {
+    display: flex;
+}
+
+.ship-top-view.vertical {
+    display: block;
+}
+
+/* 船只选择列表样式 */
+.ship-list {
+    max-height: 570px;
+    overflow-y: auto;
+}
+
+.ship-item {
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.ship-item:hover {
+    background-color: #f5f5f5;
+}
+
+.ship-item.selected {
+    border-color: #3498db;
+    background-color: #ecf0f1;
+}
+
+.ship-item.placed {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.ship-item.sunk {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.ship-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ship-visual {
+    display: flex;
+    margin: 5px 0;
+}
+
+.ship-status {
+    font-size: 12px;
+    color: #666;
+}
+
+/* 状态面板样式 */
+.ships-status-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.ship-status-item {
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.ship-status-item.ready {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.ship-status-item.damaged {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+}
+
+.ship-status-item.sunk {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* 选中的船只样式 */
+.cell.selected-ship {
+    box-shadow: 0 0 0 3px #ffeb3b, 0 0 10px 5px rgba(255, 235, 59, 0.5);
+    z-index: 10;
+    position: relative;
+}
+
+.cell.selected-ship::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 2px solid #ffeb3b;
+    border-radius: 2px;
+    animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 235, 59, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 235, 59, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 235, 59, 0);
+    }
+}
+
+/* 操作提示样式 */
+#action-hint {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    z-index: 1000;
+    font-size: 18px;
+    text-align: center;
+    border: 2px solid #3498db;
+    box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 20px rgba(52, 152, 219, 0.5); }
+    50% { box-shadow: 0 0 30px rgba(52, 152, 219, 0.8); }
+    100% { box-shadow: 0 0 20px rgba(52, 152, 219, 0.5); }
+}
+
+/* 移动模式下的单元格高亮 */
+.cell.move-target {
+    background-color: rgba(52, 152, 219, 0.3) !important;
+    border: 2px solid #3498db !important;
+}
+
+.cell.attack-target {
+    background-color: rgba(231, 76, 60, 0.3) !important;
+    border: 2px solid #e74c3c !important;
+}
+
+/* 动作按钮激活状态 */
+#action-buttons button.active {
+    background-color: #2ecc71 !important;
+    border-color: #27ae60 !important;
+    transform: scale(1.05);
+}
+
+/* 行动过船只的样式 */
+.ship-status-item.action-taken {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #6c757d;
+    opacity: 0.7;
+}
+
+.cell.action-taken {
+    opacity: 0.5;
+    filter: grayscale(50%);
+}
+
+.ship-item.action-taken {
+    opacity: 0.7;
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+/* 船只行动状态指示器 */
+.action-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.action-indicator.available {
+    background-color: #28a745;
+}
+
+.action-indicator.taken {
+    background-color: #dc3545;
+}
+
+/* 高亮可移动目标 */
+.cell.move-target {
+    box-shadow: inset 0 0 0 3px #27ae60;
+    background-color: rgba(39, 174, 96, 0.2);
+}
+
+/* 高亮可攻击目标 */
+.cell.attack-target {
+    box-shadow: inset 0 0 0 3px #e74c3c;
+    background-color: rgba(231, 76, 60, 0.2);
+}
+
+/* 消息提示样式 */
+.message-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.message {
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-size: 14px;
+    line-height: 1.5;
+    animation: slideIn 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.message.success {
+    background-color: #f6ffed;
+    border: 1px solid #b7eb8f;
+    color: #52c41a;
+}
+
+.message.error {
+    background-color: #fff2f0;
+    border: 1px solid #ffccc7;
+    color: #ff4d4f;
+}
+
+.message.warning {
+    background-color: #fffbe6;
+    border: 1px solid #ffe58f;
+    color: #faad14;
+}
+
+.message.info {
+    background-color: #e6f7ff;
+    border: 1px solid #91d5ff;
+    color: #1890ff;
+}
+
+.message-close {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.message-close:hover {
+    opacity: 1;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.message.fade-out {
+    animation: fadeOut 0.3s ease-in forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/* 浮动船只样式 */
+.ship-element {
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    overflow: hidden; /* 确保图片不会超出容器 */
+    border-radius: 4px; /* 添加圆角效果 */
+}
+
+.ship-image {
+    display: block;
+    object-fit: contain; /* 确保图片完整显示，不会被裁剪 */
+    box-sizing: border-box;
+    /* 移除默认的transform-origin，由JavaScript动态设置 */
+}
+
+/* 为红方和蓝方船只设置半透明背景色 */
+.ship-element.red {
+    background-color: rgba(231, 0, 0, 0.4); /* 半透明红色背景 */
+}
+
+.ship-element.blue {
+    background-color: rgba(0, 0, 255, 0.3); /* 半透明蓝色背景 */
+}
+
+/* 本回合可行动船只 - 白色边框 */
+.ship-element.action-available .ship-image {
+    border: 2px solid #ffffff; /* 白色边框 */
+}
+
+/* 已行动完毕船只 - 深灰色边框 */
+.ship-element.action-taken .ship-image {
+    /*border: 3px solid #6c757d;  深灰色边框 */
+    border: none;
+}
+
+/* 当前选中的船只 - 黄色发光效果 */
+.ship-element.selected .ship-image {
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.8); /* 黄色发光效果 */
+    border: 4px solid #ffd700; /* 金色边框 */
+}
+
+/* 受损状态的船只 */
+.ship-element.damaged .ship-image {
+    filter: sepia(50%);
+}
+
+/* 沉没状态的船只 */
+.ship-element.sunk .ship-image {
+    filter: grayscale(100%) brightness(20%);
+    border: none !important;
+    opacity: 0.5;
+}
+
+.ship-element.sunk {
+    z-index: 9!important;
+}
+
+/* 船只生命值显示样式 */
+.ship-health-display {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    z-index: 15;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+/* 满血状态 - 绿色 */
+.ship-health-display.full-health {
+    background-color: #28a745; /* 绿色 */
+}
+
+/* 受伤状态 - 红色 */
+.ship-health-display.damaged-health {
+    background-color: #dc3545; /* 红色 */
+}

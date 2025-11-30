@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleship</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="header">
+            <h1>Battleship</h1>
+            <div id="game-info">
+                <div id="turn-indicator">当前回合: <span id="current-turn">红方</span></div>
+                <div id="game-phase">游戏阶段: <span id="phase-text">准备阶段</span></div>
+            </div>
+        </div>
+
+        <!-- 中央大字消息 -->
+        <div id="center-message" class="center-message" aria-hidden="true"></div>
+
+        <div id="game-board-container">
+            <div id="board"></div>
+            <div id="controls">
+                <div id="ship-selection">
+                    <h3>选择船只</h3>
+                    <div id="ship-list" class="ship-list">
+                        <!-- 船只列表将动态生成 -->
+                    </div>
+                </div>
+                
+                <div id="action-buttons" style="display: none;">
+                    <h3>船只动作</h3>
+                    <button id="move-btn">移动</button>
+                    <button id="attack-btn">攻击</button>
+                    <button id="rotate-btn">转向</button>
+                    <button id="end-turn-btn">结束回合</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="status-panel">
+            <div id="red-player-status" class="player-status">
+                <h3>红方船只状态</h3>
+                <div id="red-ships-list" class="ships-status-list"></div>
+            </div>
+            <div id="blue-player-status" class="player-status">
+                <h3>蓝方船只状态</h3>
+                <div id="blue-ships-list" class="ships-status-list"></div>
+            </div>
+        </div>
+
+        <div id="dice-result" style="display: none;">
+            <h3>骰子结果</h3>
+            <div id="dice-value"></div>
+        </div>
+
+        <div>Copyright © 2025, nightprince@163.com</div>
+    </div>
+
+    <!-- 消息提示容器 -->
+    <div id="message-container" class="message-container"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

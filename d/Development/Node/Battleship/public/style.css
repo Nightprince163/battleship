@@ -1,0 +1,80 @@
+/* 浮动船只样式 */
+.ship-element {
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    overflow: hidden; /* 确保图片不会超出容器 */
+    border-radius: 4px; /* 添加圆角效果 */
+}
+
+.ship-image {
+    display: block;
+    object-fit: contain; /* 确保图片完整显示，不会被裁剪 */
+    box-sizing: border-box;
+    /* 移除默认的transform-origin，由JavaScript动态设置 */
+}
+
+/* 为红方和蓝方船只设置半透明背景色 */
+.ship-element.red {
+    background-color: rgba(231, 76, 60, 0.3); /* 半透明红色背景 */
+}
+
+.ship-element.blue {
+    background-color: rgba(52, 152, 219, 0.3); /* 半透明蓝色背景 */
+}
+
+/* 本回合可行动船只 - 白色边框 */
+.ship-element.action-available .ship-image {
+    border: 2px solid #ffffff; /* 白色边框 */
+}
+
+/* 已行动完毕船只 - 深灰色边框 */
+.ship-element.action-taken .ship-image {
+    border: 2px solid #6c757d; /* 深灰色边框 */
+}
+
+/* 当前选中的船只 - 黄色发光效果 */
+.ship-element.selected .ship-image {
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.8); /* 黄色发光效果 */
+    border: 3px solid #ffd700; /* 金色边框 */
+}
+
+/* 受损状态的船只 */
+.ship-element.damaged .ship-image {
+    filter: sepia(50%);
+}
+
+/* 沉没状态的船只 */
+.ship-element.sunk .ship-image {
+    z-index: 9!important;
+    filter: grayscale(100%) brightness(50%);
+}
+
+/* 船只生命值显示样式 */
+.ship-health-display {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    z-index: 15;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+/* 满血状态 - 绿色 */
+.ship-health-display.full-health {
+    background-color: #28a745; /* 绿色 */
+}
+
+/* 受伤状态 - 红色 */
+.ship-health-display.damaged-health {
+    background-color: #dc3545; /* 红色 */
+}
